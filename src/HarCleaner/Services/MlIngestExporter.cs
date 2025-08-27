@@ -219,34 +219,12 @@ public class MlIngestExporter
 
 	private string? GetRequestBody(HarEntry entry)
 	{
-		if (entry.Request.PostData?.Text != null)
-		{
-			// Limit size to prevent huge bodies
-			const int maxBodySize = 10000;
-			var body = entry.Request.PostData.Text;
-			if (body.Length > maxBodySize)
-			{
-				return body.Substring(0, maxBodySize) + "... [truncated]";
-			}
-			return body;
-		}
-		return null;
+		return entry.Request.PostData?.Text;
 	}
 
 	private string? GetResponseBody(HarEntry entry)
 	{
-		if (entry.Response.Content?.Text != null)
-		{
-			// Limit size to prevent huge bodies
-			const int maxBodySize = 10000;
-			var body = entry.Response.Content.Text;
-			if (body.Length > maxBodySize)
-			{
-				return body.Substring(0, maxBodySize) + "... [truncated]";
-			}
-			return body;
-		}
-		return null;
+		return entry.Response.Content?.Text;
 	}
 
 	private string DetermineRequestType(HarEntry entry)
