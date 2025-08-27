@@ -44,7 +44,7 @@ public class PrivacyFilterTests
 		// Assert
 		Assert.True(result);
 		Assert.True(originalHeaderCount > 0);
-		Assert.DoesNotContain(entry.Request.Headers, h => h.Name.ToLower().Contains("authorization"));
+		Assert.DoesNotContain(entry.Request.Headers, h => h.Name.ToLower().Contains("authorization", StringComparison.OrdinalIgnoreCase));
 	}
 
 	[Fact]
@@ -119,7 +119,7 @@ public class PrivacyFilterTests
 		Assert.True(result);
 		Assert.Empty(entry.Request.Cookies);
 		Assert.Empty(entry.Response.Cookies);
-		Assert.DoesNotContain(entry.Request.Headers, h => h.Name.ToLower().Contains("authorization"));
+		Assert.DoesNotContain(entry.Request.Headers, h => h.Name.ToLower().Contains("authorization", StringComparison.OrdinalIgnoreCase));
 		Assert.DoesNotContain(entry.Request.Headers, h => h.Name.Equals("User-Agent", StringComparison.OrdinalIgnoreCase));
 
 		var sessionParam = entry.Request.QueryString.FirstOrDefault(q => string.Equals(q.Name, "session", StringComparison.OrdinalIgnoreCase));

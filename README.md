@@ -10,6 +10,8 @@ A .NET CLI tool for cleaning and filtering HAR (HTTP Archive) files based on var
 - **HTTP Method Filtering**: Filter by GET, POST, etc.
 - **Status Code Filtering**: Filter by response status codes
 - **Size-based Filtering**: Filter by request/response size thresholds
+- **Header Filtering**: Include/exclude specific headers from requests and responses (preserves entries)
+- **Cookie Filtering**: Include/exclude specific cookies from requests and responses (preserves entries)
 - **Privacy & Security Cleaning**: Remove sensitive data like cookies, auth tokens, personal identifiers
 - **Content Filtering**: Remove or limit response/request content
 - **Chrome DevTools Data**: Remove browser-specific debugging fields
@@ -47,6 +49,20 @@ These filters **keep the HTTP request/response entries** but remove or modify th
 
 **Example**: `--exclude-content-types image,video` keeps image/video requests in the HAR file with all their metadata (headers, timing, size), but replaces the actual content with `[CONTENT REMOVED - Type: image/png]`.
 
+### Metadata Filters (Keep Requests, Modify Headers/Cookies)
+These filters **keep the HTTP request/response entries** but selectively include or exclude specific headers and cookies from the metadata. All other request information (URL, timing, content, etc.) is preserved.
+
+**Available Metadata Filters:**
+- `--include-headers`: Only keep headers matching the specified patterns (others are removed)
+- `--exclude-headers`: Remove headers matching the specified patterns (others are kept)
+- `--include-cookies`: Only keep cookies matching the specified patterns (others are removed)
+- `--exclude-cookies`: Remove cookies matching the specified patterns (others are kept)
+
+**Examples**: 
+- `--exclude-headers "user-agent,accept-language"` removes browser identification headers while keeping all other headers
+- `--include-cookies "session,auth"` only keeps authentication-related cookies, removing tracking and analytics cookies
+- `--exclude-cookies "tracking,analytics"` removes privacy-invasive cookies while preserving functional cookies
+
 ### When to Use Which Filter Type
 
 **Use Entry Filters When:**
@@ -61,8 +77,14 @@ These filters **keep the HTTP request/response entries** but remove or modify th
 - You want to sanitize data while keeping the request structure
 - Examples: Remove image content but keep timing data for performance analysis, sanitize responses while preserving request patterns
 
-**Combining Both Types:**
-Entry filters are applied first (removing entire requests), then content filters are applied to the remaining requests (modifying content). This allows powerful combinations like keeping only API requests AND removing large response bodies.
+**Use Metadata Filters When:**
+- You want to preserve requests and content but remove/filter specific headers or cookies
+- You need to sanitize privacy-sensitive metadata while keeping functional data
+- You want to focus analysis on specific headers/cookies without losing request context
+- Examples: Remove tracking headers for privacy analysis, keep only authentication cookies for security testing, filter out browser fingerprinting headers
+
+**Combining Filter Types:**
+Entry filters are applied first (removing entire requests), then content filters are applied (modifying content), then metadata filters are applied (filtering headers/cookies). This allows powerful combinations like keeping only API requests AND removing large response bodies AND filtering sensitive headers.
 
 ## Installation
 
@@ -133,6 +155,30 @@ HarCleaner -i input.har -o output.har --min-size 1024
 
 # Exclude large responses (> 1MB)
 HarCleaner -i input.har -o output.har --max-size 1048576
+```
+
+### Header Filtering
+```bash
+# Remove tracking and fingerprinting headers
+HarCleaner -i input.har -o output.har --exclude-headers "user-agent,accept-language,accept-encoding"
+
+# Keep only essential headers
+HarCleaner -i input.har -o output.har --include-headers "authorization,content-type,content-length"
+
+# Remove multiple header patterns
+HarCleaner -i input.har -o output.har --exclude-headers "x-forwarded,x-real-ip,cf-"
+```
+
+### Cookie Filtering
+```bash
+# Remove tracking and analytics cookies
+HarCleaner -i input.har -o output.har --exclude-cookies "tracking,analytics,_ga,_gid,fbp"
+
+# Keep only session and authentication cookies
+HarCleaner -i input.har -o output.har --include-cookies "session,auth,token,login"
+
+# Remove advertising and social media cookies
+HarCleaner -i input.har -o output.har --exclude-cookies "doubleclick,facebook,twitter,linkedin"
 ```
 
 ### Privacy and Security Filtering
@@ -252,6 +298,8 @@ HarCleaner -i input.har -o output.har --xhr-only --verbose
 | `--exclude-content-types` | Comma-separated list of content types to remove content from |
 | `--include-headers` | Comma-separated list of header names or patterns to include in requests and responses (others will be removed) |
 | `--exclude-headers` | Comma-separated list of header names or patterns to exclude from requests and responses |
+| `--include-cookies` | Comma-separated list of cookie names or patterns to include in requests and responses (others will be removed) |
+| `--exclude-cookies` | Comma-separated list of cookie names or patterns to exclude from requests and responses |
 | `--remove-chrome-data` | Remove Chrome DevTools specific fields |
 
 ## ML-Ingest Output Format
@@ -398,7 +446,7 @@ dotnet run --project src/HarCleaner -- --help
 
 ## Testing
 
-The project includes a comprehensive test suite with 58+ tests covering all components:
+The project includes a comprehensive test suite with 107+ tests covering all components:
 
 ### Running Tests
 ```bash
@@ -415,10 +463,10 @@ dotnet test
 
 ### Test Coverage
 The test suite covers:
-- **Filter Tests**: All 9 filter types with various scenarios (28+ tests)
+- **Filter Tests**: All 11 filter types with various scenarios (50+ tests)
 - **Service Tests**: HAR loading, cleaning service, and export functionality (15+ tests)
-- **Integration Tests**: End-to-end scenarios with real HAR data (10+ tests)
-- **Edge Cases**: Error handling, empty files, malformed data (8+ tests)
+- **Integration Tests**: End-to-end scenarios with real HAR data (25+ tests)
+- **Edge Cases**: Error handling, empty files, malformed data (17+ tests)
 
 ### Test Categories
 - **Unit Tests**: Individual filter and service component testing

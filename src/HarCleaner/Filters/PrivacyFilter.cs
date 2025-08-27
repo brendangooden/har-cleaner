@@ -68,13 +68,13 @@ public class PrivacyFilter : IFilter
 			var header = headers[i];
 			var headerName = header.Name.ToLowerInvariant();
 
-			if (_sensitiveHeaders.Any(sh => headerName.Contains(sh)))
+			if (_sensitiveHeaders.Any(sh => headerName.Contains(sh, StringComparison.OrdinalIgnoreCase)))
 			{
-				if (_removeAuthTokens && (headerName.Contains("auth") || headerName.Contains("token")))
+				if (_removeAuthTokens && (headerName.Contains("auth", StringComparison.OrdinalIgnoreCase) || headerName.Contains("token", StringComparison.OrdinalIgnoreCase)))
 				{
 					headers.RemoveAt(i);
 				}
-				else if (_removePersonalIdentifiers && (headerName.Contains("session") || headerName.Contains("user")))
+				else if (_removePersonalIdentifiers && (headerName.Contains("session", StringComparison.OrdinalIgnoreCase) || headerName.Contains("user", StringComparison.OrdinalIgnoreCase)))
 				{
 					headers.RemoveAt(i);
 				}
@@ -89,9 +89,9 @@ public class PrivacyFilter : IFilter
 			var param = queryString[i];
 			var paramName = param.Name.ToLowerInvariant();
 
-			if (_sensitiveParams.Any(sp => paramName.Contains(sp)))
+			if (_sensitiveParams.Any(sp => paramName.Contains(sp, StringComparison.OrdinalIgnoreCase)))
 			{
-				if (_removeAuthTokens && (paramName.Contains("token") || paramName.Contains("auth") || paramName.Contains("key")))
+				if (_removeAuthTokens && (paramName.Contains("token", StringComparison.OrdinalIgnoreCase) || paramName.Contains("auth", StringComparison.OrdinalIgnoreCase) || paramName.Contains("key", StringComparison.OrdinalIgnoreCase)))
 				{
 					queryString.RemoveAt(i);
 				}

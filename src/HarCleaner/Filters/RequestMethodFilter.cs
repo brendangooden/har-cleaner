@@ -50,7 +50,7 @@ public class RequestMethodFilter : IFilter
 		// Look for X-Requested-With header (common XHR indicator)
 		var xRequestedWith = headers.FirstOrDefault(h =>
 			h.Name.Equals("X-Requested-With", StringComparison.OrdinalIgnoreCase));
-		if (xRequestedWith != null && xRequestedWith.Value.Contains("XMLHttpRequest"))
+		if (xRequestedWith != null && xRequestedWith.Value.Contains("XMLHttpRequest", StringComparison.OrdinalIgnoreCase))
 		{
 			return true;
 		}
@@ -61,9 +61,9 @@ public class RequestMethodFilter : IFilter
 		if (acceptHeader != null)
 		{
 			var accept = acceptHeader.Value.ToLowerInvariant();
-			if (accept.Contains("application/json") ||
-				accept.Contains("application/xml") ||
-				accept.Contains("text/xml"))
+			if (accept.Contains("application/json", StringComparison.OrdinalIgnoreCase) ||
+				accept.Contains("application/xml", StringComparison.OrdinalIgnoreCase) ||
+				accept.Contains("text/xml", StringComparison.OrdinalIgnoreCase))
 			{
 				return true;
 			}
@@ -75,8 +75,8 @@ public class RequestMethodFilter : IFilter
 		if (contentTypeHeader != null)
 		{
 			var contentType = contentTypeHeader.Value.ToLowerInvariant();
-			if (contentType.Contains("application/json") ||
-				contentType.Contains("application/xml"))
+			if (contentType.Contains("application/json", StringComparison.OrdinalIgnoreCase) ||
+				contentType.Contains("application/xml", StringComparison.OrdinalIgnoreCase))
 			{
 				return true;
 			}
@@ -84,9 +84,9 @@ public class RequestMethodFilter : IFilter
 
 		// Check if response content type suggests API call
 		var responseContentType = entry.Response.Content.MimeType?.ToLowerInvariant() ?? "";
-		if (responseContentType.Contains("application/json") ||
-			responseContentType.Contains("application/xml") ||
-			responseContentType.Contains("text/xml"))
+		if (responseContentType.Contains("application/json", StringComparison.OrdinalIgnoreCase) ||
+			responseContentType.Contains("application/xml", StringComparison.OrdinalIgnoreCase) ||
+			responseContentType.Contains("text/xml", StringComparison.OrdinalIgnoreCase))
 		{
 			return true;
 		}

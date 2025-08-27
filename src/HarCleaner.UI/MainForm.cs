@@ -169,6 +169,10 @@ public partial class MainForm : Form
 			IncludeHeaders = string.IsNullOrWhiteSpace(txtIncludeHeaders.Text) ? null : txtIncludeHeaders.Text,
 			ExcludeHeaders = string.IsNullOrWhiteSpace(txtExcludeHeaders.Text) ? null : txtExcludeHeaders.Text,
 
+			// Cookie filters
+			IncludeCookies = string.IsNullOrWhiteSpace(txtIncludeCookies.Text) ? null : txtIncludeCookies.Text,
+			ExcludeCookies = string.IsNullOrWhiteSpace(txtExcludeCookies.Text) ? null : txtExcludeCookies.Text,
+
 			// Method filters
 			IncludeMethods = string.IsNullOrWhiteSpace(txtIncludeMethods.Text) ? null : txtIncludeMethods.Text,
 			ExcludeMethods = string.IsNullOrWhiteSpace(txtExcludeMethods.Text) ? null : txtExcludeMethods.Text,

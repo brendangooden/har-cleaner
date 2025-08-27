@@ -268,27 +268,27 @@ public class MlIngestExporter
 		if (IsStaticResourceByUrl(entry.Request.Url))
 		{
 			var url = entry.Request.Url.ToLowerInvariant();
-			if (url.Contains(".js"))
+			if (url.Contains(".js", StringComparison.OrdinalIgnoreCase))
 			{
 				return "script";
 			}
 
-			if (url.Contains(".css"))
+			if (url.Contains(".css", StringComparison.OrdinalIgnoreCase))
 			{
 				return "stylesheet";
 			}
 
-			if (url.Contains(".png") || url.Contains(".jpg") || url.Contains(".jpeg") || url.Contains(".gif") || url.Contains(".svg") || url.Contains(".ico"))
+			if (url.Contains(".png", StringComparison.OrdinalIgnoreCase) || url.Contains(".jpg", StringComparison.OrdinalIgnoreCase) || url.Contains(".jpeg", StringComparison.OrdinalIgnoreCase) || url.Contains(".gif", StringComparison.OrdinalIgnoreCase) || url.Contains(".svg", StringComparison.OrdinalIgnoreCase) || url.Contains(".ico", StringComparison.OrdinalIgnoreCase))
 			{
 				return "image";
 			}
 
-			if (url.Contains(".woff") || url.Contains(".woff2") || url.Contains(".ttf") || url.Contains(".eot"))
+			if (url.Contains(".woff", StringComparison.OrdinalIgnoreCase) || url.Contains(".woff2", StringComparison.OrdinalIgnoreCase) || url.Contains(".ttf", StringComparison.OrdinalIgnoreCase) || url.Contains(".eot", StringComparison.OrdinalIgnoreCase))
 			{
 				return "font";
 			}
 
-			if (url.Contains(".mp4") || url.Contains(".mp3") || url.Contains(".wav") || url.Contains(".avi"))
+			if (url.Contains(".mp4", StringComparison.OrdinalIgnoreCase) || url.Contains(".mp3", StringComparison.OrdinalIgnoreCase) || url.Contains(".wav", StringComparison.OrdinalIgnoreCase) || url.Contains(".avi", StringComparison.OrdinalIgnoreCase))
 			{
 				return "media";
 			}
@@ -303,9 +303,9 @@ public class MlIngestExporter
 	private bool IsApiCallByUrl(string url)
 	{
 		var lowerUrl = url.ToLowerInvariant();
-		return ApiIndicators.Any(indicator => lowerUrl.Contains(indicator)) ||
-			   lowerUrl.Contains("api.") || // Check for api subdomain
-			   lowerUrl.Contains(".api.");   // Check for api in subdomain
+		return ApiIndicators.Any(indicator => lowerUrl.Contains(indicator, StringComparison.OrdinalIgnoreCase)) ||
+			   lowerUrl.Contains("api.", StringComparison.OrdinalIgnoreCase) || // Check for api subdomain
+			   lowerUrl.Contains(".api.", StringComparison.OrdinalIgnoreCase);   // Check for api in subdomain
 	}
 
 	private static bool IsXhrRequest(HarEntry entry)
@@ -316,7 +316,7 @@ public class MlIngestExporter
 		// Look for X-Requested-With header (common XHR indicator)
 		var xRequestedWith = headers.FirstOrDefault(h =>
 			h.Name.Equals("X-Requested-With", StringComparison.OrdinalIgnoreCase));
-		if (xRequestedWith != null && xRequestedWith.Value.Contains("XMLHttpRequest"))
+		if (xRequestedWith != null && xRequestedWith.Value.Contains("XMLHttpRequest", StringComparison.OrdinalIgnoreCase))
 		{
 			return true;
 		}
@@ -327,9 +327,9 @@ public class MlIngestExporter
 		if (acceptHeader != null)
 		{
 			var accept = acceptHeader.Value.ToLowerInvariant();
-			if (accept.Contains("application/json") ||
-				accept.Contains("application/xml") ||
-				accept.Contains("text/xml"))
+			if (accept.Contains("application/json", StringComparison.OrdinalIgnoreCase) ||
+				accept.Contains("application/xml", StringComparison.OrdinalIgnoreCase) ||
+				accept.Contains("text/xml", StringComparison.OrdinalIgnoreCase))
 			{
 				return true;
 			}
@@ -341,8 +341,8 @@ public class MlIngestExporter
 		if (contentTypeHeader != null)
 		{
 			var contentType = contentTypeHeader.Value.ToLowerInvariant();
-			if (contentType.Contains("application/json") ||
-				contentType.Contains("application/xml"))
+			if (contentType.Contains("application/json", StringComparison.OrdinalIgnoreCase) ||
+				contentType.Contains("application/xml", StringComparison.OrdinalIgnoreCase))
 			{
 				return true;
 			}
@@ -350,9 +350,9 @@ public class MlIngestExporter
 
 		// Check if response content type suggests API call
 		var responseContentType = entry.Response.Content.MimeType?.ToLowerInvariant() ?? "";
-		if (responseContentType.Contains("application/json") ||
-			responseContentType.Contains("application/xml") ||
-			responseContentType.Contains("text/xml"))
+		if (responseContentType.Contains("application/json", StringComparison.OrdinalIgnoreCase) ||
+			responseContentType.Contains("application/xml", StringComparison.OrdinalIgnoreCase) ||
+			responseContentType.Contains("text/xml", StringComparison.OrdinalIgnoreCase))
 		{
 			return true;
 		}
@@ -363,7 +363,7 @@ public class MlIngestExporter
 	private bool IsStaticResourceByUrl(string url)
 	{
 		var lowerUrl = url.ToLowerInvariant();
-		return StaticExtensions.Any(ext => lowerUrl.Contains(ext));
+		return StaticExtensions.Any(ext => lowerUrl.Contains(ext, StringComparison.OrdinalIgnoreCase));
 	}
 
 	private bool HasAuthHeaders(HarEntry entry)
@@ -372,8 +372,8 @@ public class MlIngestExporter
 			h.Name.Equals("authorization", StringComparison.OrdinalIgnoreCase) ||
 			h.Name.Equals("x-api-key", StringComparison.OrdinalIgnoreCase) ||
 			h.Name.Equals("x-auth-token", StringComparison.OrdinalIgnoreCase) ||
-			h.Value.ToLowerInvariant().Contains("bearer") ||
-			h.Value.ToLowerInvariant().Contains("token"));
+			h.Value.ToLowerInvariant().Contains("bearer", StringComparison.OrdinalIgnoreCase) ||
+			h.Value.ToLowerInvariant().Contains("token", StringComparison.OrdinalIgnoreCase));
 	}
 
 	private string CategorizeUserAgent(HarEntry entry)
@@ -388,32 +388,32 @@ public class MlIngestExporter
 
 		var ua = userAgentHeader.Value.ToLowerInvariant();
 
-		if (ua.Contains("chrome"))
+		if (ua.Contains("chrome", StringComparison.OrdinalIgnoreCase))
 		{
 			return "chrome";
 		}
 
-		if (ua.Contains("firefox"))
+		if (ua.Contains("firefox", StringComparison.OrdinalIgnoreCase))
 		{
 			return "firefox";
 		}
 
-		if (ua.Contains("safari"))
+		if (ua.Contains("safari", StringComparison.OrdinalIgnoreCase))
 		{
 			return "safari";
 		}
 
-		if (ua.Contains("edge"))
+		if (ua.Contains("edge", StringComparison.OrdinalIgnoreCase))
 		{
 			return "edge";
 		}
 
-		if (ua.Contains("mobile"))
+		if (ua.Contains("mobile", StringComparison.OrdinalIgnoreCase))
 		{
 			return "mobile";
 		}
 
-		if (ua.Contains("bot") || ua.Contains("crawler"))
+		if (ua.Contains("bot", StringComparison.OrdinalIgnoreCase) || ua.Contains("crawler", StringComparison.OrdinalIgnoreCase))
 		{
 			return "bot";
 		}

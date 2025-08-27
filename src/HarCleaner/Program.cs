@@ -116,6 +116,20 @@ public static class Program
 				}
 			}
 
+			// Add cookie filter
+			if (options.IncludeCookiesList.Length > 0 || options.ExcludeCookiesList.Length > 0)
+			{
+				cleaner.AddFilter(new CookieFilter(options.IncludeCookiesList, options.ExcludeCookiesList));
+				if (options.IncludeCookiesList.Length > 0)
+				{
+					filtersApplied.Add($"Include cookies: {string.Join(", ", options.IncludeCookiesList)}");
+				}
+				if (options.ExcludeCookiesList.Length > 0)
+				{
+					filtersApplied.Add($"Exclude cookies: {string.Join(", ", options.ExcludeCookiesList)}");
+				}
+			}
+
 			// Add status code filter
 			if (options.IncludeStatusCodesList.Length > 0 || options.ExcludeStatusCodesList.Length > 0)
 			{

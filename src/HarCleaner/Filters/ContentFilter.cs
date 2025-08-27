@@ -48,7 +48,7 @@ public class ContentFilter : IFilter
 		if (_excludeContentTypes.Length > 0)
 		{
 			var mimeType = entry.Response.Content.MimeType?.ToLowerInvariant() ?? "";
-			if (_excludeContentTypes.Any(ct => mimeType.Contains(ct.ToLowerInvariant())))
+			if (_excludeContentTypes.Any(ct => mimeType.Contains(ct.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase)))
 			{
 				entry.Response.Content.Text = $"[CONTENT REMOVED - Type: {entry.Response.Content.MimeType}]";
 			}

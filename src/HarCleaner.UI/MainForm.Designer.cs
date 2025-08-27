@@ -67,6 +67,12 @@ namespace HarCleaner.UI
             var lblExcludeHeaders = new Label();
             txtExcludeHeaders = new TextBox();
 
+            // Cookie filters
+            var lblIncludeCookies = new Label();
+            txtIncludeCookies = new TextBox();
+            var lblExcludeCookies = new Label();
+            txtExcludeCookies = new TextBox();
+
             // Method filters
             var lblIncludeMethods = new Label();
             txtIncludeMethods = new TextBox();
@@ -287,7 +293,8 @@ namespace HarCleaner.UI
             // Configure remaining controls...
             SetupFilterControls(grpFilters, filterTable, lblExcludeTypes, txtExcludeTypes, lblIncludeTypes, txtIncludeTypes, chkXhrOnly,
                               lblIncludeUrl, txtIncludeUrl, lblExcludeUrl, txtExcludeUrl, lblIncludeHeaders, txtIncludeHeaders,
-                              lblExcludeHeaders, txtExcludeHeaders, lblIncludeMethods, txtIncludeMethods,
+                              lblExcludeHeaders, txtExcludeHeaders, lblIncludeCookies, txtIncludeCookies,
+                              lblExcludeCookies, txtExcludeCookies, lblIncludeMethods, txtIncludeMethods,
                               lblExcludeMethods, txtExcludeMethods, lblMinSize, txtMinSize, lblMaxSize, txtMaxSize,
                               lblIncludeStatus, txtIncludeStatus, lblExcludeStatus, txtExcludeStatus);
 
@@ -377,7 +384,8 @@ namespace HarCleaner.UI
         private void SetupFilterControls(GroupBox grpFilters, TableLayoutPanel filterTable, Label lblExcludeTypes, TextBox txtExcludeTypes,
             Label lblIncludeTypes, TextBox txtIncludeTypes, CheckBox chkXhrOnly, Label lblIncludeUrl, TextBox txtIncludeUrl,
             Label lblExcludeUrl, TextBox txtExcludeUrl, Label lblIncludeHeaders, TextBox txtIncludeHeaders,
-            Label lblExcludeHeaders, TextBox txtExcludeHeaders, Label lblIncludeMethods, TextBox txtIncludeMethods,
+            Label lblExcludeHeaders, TextBox txtExcludeHeaders, Label lblIncludeCookies, TextBox txtIncludeCookies,
+            Label lblExcludeCookies, TextBox txtExcludeCookies, Label lblIncludeMethods, TextBox txtIncludeMethods,
             Label lblExcludeMethods, TextBox txtExcludeMethods, Label lblMinSize, TextBox txtMinSize, Label lblMaxSize,
             TextBox txtMaxSize, Label lblIncludeStatus, TextBox txtIncludeStatus, Label lblExcludeStatus, TextBox txtExcludeStatus)
         {
@@ -467,6 +475,21 @@ namespace HarCleaner.UI
             txtExcludeHeaders.PlaceholderText = "user-agent,accept-language";
             filterTable.Controls.Add(lblExcludeHeaders, 0, row);
             filterTable.Controls.Add(txtExcludeHeaders, 1, row++);
+
+            // Cookie filters
+            lblIncludeCookies.Text = "Include Cookies:";
+            lblIncludeCookies.Anchor = AnchorStyles.Left;
+            txtIncludeCookies.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            txtIncludeCookies.PlaceholderText = "session,auth";
+            filterTable.Controls.Add(lblIncludeCookies, 0, row);
+            filterTable.Controls.Add(txtIncludeCookies, 1, row++);
+
+            lblExcludeCookies.Text = "Exclude Cookies:";
+            lblExcludeCookies.Anchor = AnchorStyles.Left;
+            txtExcludeCookies.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            txtExcludeCookies.PlaceholderText = "tracking,analytics";
+            filterTable.Controls.Add(lblExcludeCookies, 0, row);
+            filterTable.Controls.Add(txtExcludeCookies, 1, row++);
 
             // Method filters
             lblIncludeMethods.Text = "Include Methods:";
@@ -693,6 +716,8 @@ namespace HarCleaner.UI
         private TextBox txtExcludeUrl = null!;
         private TextBox txtIncludeHeaders = null!;
         private TextBox txtExcludeHeaders = null!;
+        private TextBox txtIncludeCookies = null!;
+        private TextBox txtExcludeCookies = null!;
         private TextBox txtIncludeMethods = null!;
         private TextBox txtExcludeMethods = null!;
         private TextBox txtMinSize = null!;

@@ -79,17 +79,17 @@ public class RequestTypeFilter : IFilter
 				// Handle common mappings
 				var isMatch = type switch
 				{
-					"js" => mimeType.Contains("javascript") || mimeType.Equals("application/javascript", StringComparison.OrdinalIgnoreCase) || mimeType.Equals("text/javascript", StringComparison.OrdinalIgnoreCase),
-					"css" => mimeType.Contains("css"),
-					"html" => mimeType.Contains("html"),
-					"json" => mimeType.Contains("json"),
-					"xml" => mimeType.Contains("xml"),
-					"png" => mimeType.Contains("png"),
-					"jpg" or "jpeg" => mimeType.Contains("jpeg"),
-					"gif" => mimeType.Contains("gif"),
-					"svg" => mimeType.Contains("svg"),
-					"pdf" => mimeType.Contains("pdf"),
-					_ => mimeType.Contains(type)
+					"js" => mimeType.Contains("javascript", StringComparison.OrdinalIgnoreCase) || mimeType.Equals("application/javascript", StringComparison.OrdinalIgnoreCase) || mimeType.Equals("text/javascript", StringComparison.OrdinalIgnoreCase),
+					"css" => mimeType.Contains("css", StringComparison.OrdinalIgnoreCase),
+					"html" => mimeType.Contains("html", StringComparison.OrdinalIgnoreCase),
+					"json" => mimeType.Contains("json", StringComparison.OrdinalIgnoreCase),
+					"xml" => mimeType.Contains("xml", StringComparison.OrdinalIgnoreCase),
+					"png" => mimeType.Contains("png", StringComparison.OrdinalIgnoreCase),
+					"jpg" or "jpeg" => mimeType.Contains("jpeg", StringComparison.OrdinalIgnoreCase),
+					"gif" => mimeType.Contains("gif", StringComparison.OrdinalIgnoreCase),
+					"svg" => mimeType.Contains("svg", StringComparison.OrdinalIgnoreCase),
+					"pdf" => mimeType.Contains("pdf", StringComparison.OrdinalIgnoreCase),
+					_ => mimeType.Contains(type, StringComparison.OrdinalIgnoreCase)
 				};
 
 				if (isMatch)

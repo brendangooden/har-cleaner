@@ -90,6 +90,13 @@ public class FilterOptions
     [Option("include-headers", HelpText = "Comma-separated list of header names or patterns to include in requests and responses (others will be removed)")]
     public string? IncludeHeaders { get; set; }
 
+    // Cookie filtering options
+    [Option("exclude-cookies", HelpText = "Comma-separated list of cookie names or patterns to exclude from requests and responses")]
+    public string? ExcludeCookies { get; set; }
+
+    [Option("include-cookies", HelpText = "Comma-separated list of cookie names or patterns to include in requests and responses (others will be removed)")]
+    public string? IncludeCookies { get; set; }
+
     // Helper properties to parse comma-separated values
     public string[] ExcludeTypesList => ParseCommaSeparated(ExcludeTypes);
     public string[] IncludeTypesList => ParseCommaSeparated(IncludeTypes);
@@ -103,6 +110,8 @@ public class FilterOptions
 
     public string[] ExcludeHeadersList => ParseCommaSeparated(ExcludeHeaders);
     public string[] IncludeHeadersList => ParseCommaSeparated(IncludeHeaders);
+    public string[] ExcludeCookiesList => ParseCommaSeparated(ExcludeCookies);
+    public string[] IncludeCookiesList => ParseCommaSeparated(IncludeCookies);
 
     private static string[] ParseCommaSeparated(string? value)
     {
