@@ -130,18 +130,39 @@ public class CookieFilterTests
     }
 
     [Fact]
-    public void ShouldInclude_WithIncludeAndExclude_IncludeTakesPrecedence()
+    public void ShouldInclude_WithIncludeAndExclude_AppliesBothFilters()
     {
-        // Arrange - Include takes precedence over exclude
-        var filter = new CookieFilter(new[] { "session" }, new[] { "session" });
-        var entry = CreateTestEntry();
+        // Arrange - Include session cookies, then exclude sessionid specifically
+        var filter = new CookieFilter(new[] { "session", "auth" }, new[] { "sessionid" });
+        var entry = CreateTestEntryWithMultipleCookies();
 
         // Act
         var result = filter.ShouldInclude(entry);
 
         // Assert
         Assert.True(result);
-        Assert.Single(entry.Request.Cookies);
+        Assert.Equal(2, entry.Request.Cookies.Count); // authtoken and user_session (sessionid excluded)
+        Assert.Contains(entry.Request.Cookies, c => string.Equals(c.Name, "authtoken", StringComparison.Ordinal));
+        Assert.Contains(entry.Request.Cookies, c => string.Equals(c.Name, "user_session", StringComparison.Ordinal));
+        Assert.DoesNotContain(entry.Request.Cookies, c => string.Equals(c.Name, "sessionid", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ShouldInclude_WithIncludeAndExcludeOverlapping_ExcludeRemovesFromIncluded()
+    {
+        // Arrange - Include all session cookies, then exclude tracking within that set
+        var filter = new CookieFilter(new[] { "session" }, new[] { "tracking" });
+        var entry = CreateTestEntry();
+
+        // Add an additional session cookie that contains tracking
+        entry.Request.Cookies.Add(new HarCookie { Name = "session_tracking", Value = "track123" });
+
+        // Act
+        var result = filter.ShouldInclude(entry);
+
+        // Assert
+        Assert.True(result);
+        Assert.Single(entry.Request.Cookies); // Only sessionid should remain
         Assert.Equal("sessionid", entry.Request.Cookies[0].Name);
         Assert.Single(entry.Response.Cookies);
         Assert.Equal("new_session", entry.Response.Cookies[0].Name);

@@ -139,12 +139,14 @@ public class HeaderFilterTests
     }
 
     [Fact]
-    public void ShouldInclude_IncludeAndExcludeBothSpecified_IncludeTakesPrecedence()
+    public void ShouldInclude_IncludeAndExcludeBothSpecified_AppliesBothFilters()
     {
-        // Arrange - Include takes precedence over exclude
-        var filter = new HeaderFilter(new[] { "authorization" }, new[] { "authorization" });
+        // Arrange - Include first, then exclude from the included set
+        var filter = new HeaderFilter(new[] { "content", "auth" }, new[] { "length" });
         var entry = TestDataHelper.CreateTestEntry("https://example.com/api");
 
+        entry.Request.Headers.Add(new Models.HarNameValuePair { Name = "Content-Type", Value = "application/json" });
+        entry.Request.Headers.Add(new Models.HarNameValuePair { Name = "Content-Length", Value = "100" });
         entry.Request.Headers.Add(new Models.HarNameValuePair { Name = "Authorization", Value = "Bearer token" });
         entry.Request.Headers.Add(new Models.HarNameValuePair { Name = "User-Agent", Value = "Chrome/91.0" });
 
@@ -153,8 +155,31 @@ public class HeaderFilterTests
 
         // Assert
         Assert.True(result);
-        Assert.Single(entry.Request.Headers);
-        Assert.Equal("Authorization", entry.Request.Headers[0].Name);
+        Assert.Equal(2, entry.Request.Headers.Count); // Content-Type and Authorization (Content-Length excluded)
+        Assert.Contains(entry.Request.Headers, h => string.Equals(h.Name, "Content-Type", StringComparison.Ordinal));
+        Assert.Contains(entry.Request.Headers, h => string.Equals(h.Name, "Authorization", StringComparison.Ordinal));
+        Assert.DoesNotContain(entry.Request.Headers, h => string.Equals(h.Name, "Content-Length", StringComparison.Ordinal));
+        Assert.DoesNotContain(entry.Request.Headers, h => string.Equals(h.Name, "User-Agent", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ShouldInclude_IncludeAndExcludeOverlapping_ExcludeRemovesFromIncluded()
+    {
+        // Arrange - Include auth headers, then exclude authorization specifically
+        var filter = new HeaderFilter(new[] { "auth" }, new[] { "authorization" });
+        var entry = TestDataHelper.CreateTestEntry("https://example.com/api");
+
+        entry.Request.Headers.Add(new Models.HarNameValuePair { Name = "Authorization", Value = "Bearer token" });
+        entry.Request.Headers.Add(new Models.HarNameValuePair { Name = "Auth-Token", Value = "abc123" });
+        entry.Request.Headers.Add(new Models.HarNameValuePair { Name = "User-Agent", Value = "Chrome/91.0" });
+
+        // Act
+        var result = filter.ShouldInclude(entry);
+
+        // Assert
+        Assert.True(result);
+        Assert.Single(entry.Request.Headers); // Only Auth-Token should remain
+        Assert.Equal("Auth-Token", entry.Request.Headers[0].Name);
     }
 
     [Fact]

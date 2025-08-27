@@ -133,7 +133,7 @@ public partial class MainForm : Form
 			await ProcessHarFileAsync();
 
 			UpdateStatus("Processing completed successfully!");
-			MessageBox.Show("HAR file processed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			//MessageBox.Show("HAR file processed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 		catch (Exception ex)
 		{
@@ -237,8 +237,14 @@ public partial class MainForm : Form
 				harCleaner.AddFilter(new HeaderFilter(_filterOptions.IncludeHeadersList, _filterOptions.ExcludeHeadersList));
 			}
 
-			// Add status code filter
-			if (_filterOptions.IncludeStatusCodesList.Length > 0 || _filterOptions.ExcludeStatusCodesList.Length > 0)
+            // Add cookie filter
+            if (_filterOptions.IncludeCookiesList.Length > 0 || _filterOptions.ExcludeCookiesList.Length > 0)
+            {
+                harCleaner.AddFilter(new CookieFilter(_filterOptions.IncludeCookiesList, _filterOptions.ExcludeCookiesList));
+            }
+
+            // Add status code filter
+            if (_filterOptions.IncludeStatusCodesList.Length > 0 || _filterOptions.ExcludeStatusCodesList.Length > 0)
 			{
 				harCleaner.AddFilter(new StatusCodeFilter(_filterOptions.IncludeStatusCodesList, _filterOptions.ExcludeStatusCodesList));
 			}

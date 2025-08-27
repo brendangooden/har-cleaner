@@ -26,16 +26,20 @@ public class HeaderFilter : IFilter
 
     private List<HarNameValuePair> FilterHeaders(List<HarNameValuePair> headers)
     {
+        var filteredHeaders = headers;
+
+        // First apply include filter if specified
         if (_includeHeaders.Length > 0)
         {
-            // Only keep headers that match include list
-            return headers.Where(h => _includeHeaders.Any(pattern => h.Name.Contains(pattern, StringComparison.OrdinalIgnoreCase))).ToList();
+            filteredHeaders = filteredHeaders.Where(h => _includeHeaders.Any(pattern => h.Name.Contains(pattern, StringComparison.OrdinalIgnoreCase))).ToList();
         }
+
+        // Then apply exclude filter if specified
         if (_excludeHeaders.Length > 0)
         {
-            // Remove headers that match exclude list
-            return headers.Where(h => !_excludeHeaders.Any(pattern => h.Name.Contains(pattern, StringComparison.OrdinalIgnoreCase))).ToList();
+            filteredHeaders = filteredHeaders.Where(h => !_excludeHeaders.Any(pattern => h.Name.Contains(pattern, StringComparison.OrdinalIgnoreCase))).ToList();
         }
-        return headers;
+
+        return filteredHeaders;
     }
 }
