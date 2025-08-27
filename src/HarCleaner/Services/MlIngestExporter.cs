@@ -68,7 +68,8 @@ public class MlIngestExporter
                     RequestBody = GetRequestBody(entry),
                     ResponseBody = GetResponseBody(entry),
                     MimeType = GetMimeType(entry),
-                    CacheStatus = GetCacheStatus(entry)
+                    CacheStatus = GetCacheStatus(entry),
+                    ResourceType = entry.ResourceType ?? string.Empty
                 };
 
                 // Extract domain and path
@@ -79,8 +80,7 @@ public class MlIngestExporter
                 }
 
                 // Set derived fields
-                mlEntry.IsApiCall = IsApiCall(entry.Request.Url);
-                mlEntry.IsStaticResource = IsStaticResource(entry.Request.Url);
+                mlEntry.RequestType = DetermineRequestType(entry);
                 mlEntry.HasAuth = HasAuthHeaders(entry);
                 mlEntry.UserAgentCategory = CategorizeUserAgent(entry);
 
@@ -219,7 +219,56 @@ public class MlIngestExporter
         return null;
     }
 
-    private bool IsApiCall(string url)
+    private string DetermineRequestType(HarEntry entry)
+    {
+        // First check Chrome DevTools resource type (most accurate)
+        if (!string.IsNullOrEmpty(entry.ResourceType))
+        {
+            var resourceType = entry.ResourceType.ToLowerInvariant();
+            
+            // Map Chrome DevTools resource types to our categories
+            return resourceType switch
+            {
+                "xhr" => "xhr",
+                "fetch" => "fetch", 
+                "document" => "document",
+                "script" => "script",
+                "stylesheet" => "stylesheet",
+                "image" => "image",
+                "media" => "media",
+                "font" => "font",
+                "websocket" => "websocket",
+                "manifest" => "manifest",
+                "other" => "other",
+                _ => resourceType // Use the original if it's something we don't recognize
+            };
+        }
+
+        // Fallback: Determine type based on headers and content
+        if (IsXhrRequest(entry))
+            return "xhr";
+
+        // Check if it's an API call based on URL patterns
+        if (IsApiCallByUrl(entry.Request.Url))
+            return "api";
+
+        // Check if it's a static resource based on URL
+        if (IsStaticResourceByUrl(entry.Request.Url))
+        {
+            var url = entry.Request.Url.ToLowerInvariant();
+            if (url.Contains(".js")) return "script";
+            if (url.Contains(".css")) return "stylesheet";
+            if (url.Contains(".png") || url.Contains(".jpg") || url.Contains(".jpeg") || url.Contains(".gif") || url.Contains(".svg") || url.Contains(".ico")) return "image";
+            if (url.Contains(".woff") || url.Contains(".woff2") || url.Contains(".ttf") || url.Contains(".eot")) return "font";
+            if (url.Contains(".mp4") || url.Contains(".mp3") || url.Contains(".wav") || url.Contains(".avi")) return "media";
+            return "static";
+        }
+
+        // Default fallback
+        return "other";
+    }
+
+    private bool IsApiCallByUrl(string url)
     {
         var lowerUrl = url.ToLowerInvariant();
         return ApiIndicators.Any(indicator => lowerUrl.Contains(indicator)) ||
@@ -227,7 +276,51 @@ public class MlIngestExporter
                lowerUrl.Contains(".api.");   // Check for api in subdomain
     }
 
-    private bool IsStaticResource(string url)
+    private static bool IsXhrRequest(HarEntry entry)
+    {
+        // Check for XMLHttpRequest headers
+        var headers = entry.Request.Headers;
+        
+        // Look for X-Requested-With header (common XHR indicator)
+        var xRequestedWith = headers.FirstOrDefault(h => 
+            h.Name.Equals("X-Requested-With", StringComparison.OrdinalIgnoreCase));
+        if (xRequestedWith != null && xRequestedWith.Value.Contains("XMLHttpRequest"))
+            return true;
+
+        // Check Accept header for JSON/XML (common for AJAX)
+        var acceptHeader = headers.FirstOrDefault(h => 
+            h.Name.Equals("Accept", StringComparison.OrdinalIgnoreCase));
+        if (acceptHeader != null)
+        {
+            var accept = acceptHeader.Value.ToLowerInvariant();
+            if (accept.Contains("application/json") || 
+                accept.Contains("application/xml") ||
+                accept.Contains("text/xml"))
+                return true;
+        }
+
+        // Check Content-Type for JSON (common for AJAX POST requests)
+        var contentTypeHeader = headers.FirstOrDefault(h => 
+            h.Name.Equals("Content-Type", StringComparison.OrdinalIgnoreCase));
+        if (contentTypeHeader != null)
+        {
+            var contentType = contentTypeHeader.Value.ToLowerInvariant();
+            if (contentType.Contains("application/json") ||
+                contentType.Contains("application/xml"))
+                return true;
+        }
+
+        // Check if response content type suggests API call
+        var responseContentType = entry.Response.Content.MimeType?.ToLowerInvariant() ?? "";
+        if (responseContentType.Contains("application/json") ||
+            responseContentType.Contains("application/xml") ||
+            responseContentType.Contains("text/xml"))
+            return true;
+
+        return false;
+    }
+
+    private bool IsStaticResourceByUrl(string url)
     {
         var lowerUrl = url.ToLowerInvariant();
         return StaticExtensions.Any(ext => lowerUrl.Contains(ext));

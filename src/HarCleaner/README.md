@@ -28,9 +28,20 @@ A simplified, flattened JSON format optimized for machine learning data ingestio
 - Merged headers (excluding sensitive auth/cookie headers)
 - Extracted query parameters
 - Includes both request and response bodies (when not filtered out)
-- Derived fields like `is_api_call`, `is_static_resource`, `has_auth`
+- **Intelligent request classification** using `request_type` field derived from Chrome DevTools resource types:
+  - `xhr`, `fetch` - AJAX/API calls
+  - `document` - HTML pages
+  - `script` - JavaScript files
+  - `stylesheet` - CSS files
+  - `image` - Images (PNG, JPG, etc.)
+  - `font` - Web fonts
+  - `media` - Audio/video files
+  - `api` - API calls (detected by URL patterns when DevTools data unavailable)
+  - `other` - Everything else
+- Enhanced authentication detection (`has_auth`)
 - User agent categorization
 - Domain/path separation
+- Chrome DevTools resource type preservation
 
 ```bash
 # Export as ML-ingest format

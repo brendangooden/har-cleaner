@@ -49,11 +49,8 @@ public class MlIngestEntry
     [JsonPropertyName("response_body")]
     public string? ResponseBody { get; set; }
 
-    [JsonPropertyName("is_api_call")]
-    public bool IsApiCall { get; set; }
-
-    [JsonPropertyName("is_static_resource")]
-    public bool IsStaticResource { get; set; }
+    [JsonPropertyName("request_type")]
+    public string RequestType { get; set; } = string.Empty;
 
     [JsonPropertyName("has_auth")]
     public bool HasAuth { get; set; }
@@ -66,4 +63,7 @@ public class MlIngestEntry
 
     [JsonPropertyName("cache_status")]
     public string CacheStatus { get; set; } = string.Empty;
+
+    [JsonPropertyName("resource_type")]
+    public string ResourceType { get; set; } = string.Empty;
 }

@@ -33,6 +33,19 @@ public class HarEntry
 
     [JsonPropertyName("comment")]
     public string? Comment { get; set; }
+
+    // Chrome DevTools specific fields
+    [JsonPropertyName("_resourceType")]
+    public string? ResourceType { get; set; }
+
+    [JsonPropertyName("_initiator")]
+    public object? Initiator { get; set; }
+
+    [JsonPropertyName("_priority")]
+    public string? Priority { get; set; }
+
+    [JsonPropertyName("_connectionId")]
+    public string? ConnectionId { get; set; }
 }
 
 public class HarRequest
