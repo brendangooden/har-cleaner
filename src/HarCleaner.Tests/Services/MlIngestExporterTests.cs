@@ -24,16 +24,16 @@ public class MlIngestExporterTests
         Assert.Single(result);
         var entry = result.First();
         
-        Assert.Equal("POST", entry.Method);
-        Assert.Equal("api.example.com", entry.Domain);
-        Assert.Equal("/users", entry.Path);
-        Assert.Equal(201, entry.StatusCode);
+        Assert.Equal("POST", entry.Request.Method);
+        Assert.Equal("api.example.com", entry.Request.Domain);
+        Assert.Equal("/users", entry.Request.Path);
+        Assert.Equal(201, entry.Response.StatusCode);
         Assert.Equal("xhr", entry.RequestType);
-        Assert.True(entry.HasAuth);
-        Assert.Contains("John Doe", entry.RequestBody);
-        Assert.Contains("created", entry.ResponseBody);
-        Assert.Contains("sessionId=xyz789", entry.Cookies);
-        Assert.Contains("page=1", entry.QueryParams);
+        Assert.True(entry.Request.HasAuth);
+        Assert.Contains("John Doe", entry.Request.Body);
+        Assert.Contains("created", entry.Response.Body);
+        Assert.Contains("sessionId=xyz789", entry.Request.Cookies);
+        Assert.Contains("page=1", entry.Request.QueryParams);
     }
 
     [Fact]

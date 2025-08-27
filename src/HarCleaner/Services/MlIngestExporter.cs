@@ -55,34 +55,43 @@ public class MlIngestExporter
                 var mlEntry = new MlIngestEntry
                 {
                     Timestamp = entry.StartedDateTime,
-                    Method = entry.Request.Method,
-                    FullUrl = entry.Request.Url,
-                    StatusCode = entry.Response.Status,
                     ResponseTimeMs = entry.Time,
-                    RequestSize = CalculateRequestSize(entry),
-                    ResponseSize = CalculateResponseSize(entry),
-                    ContentType = GetContentType(entry),
-                    Cookies = CombineCookies(entry),
-                    Headers = CombineHeaders(entry),
-                    QueryParams = ExtractQueryParams(entry),
-                    RequestBody = GetRequestBody(entry),
-                    ResponseBody = GetResponseBody(entry),
-                    MimeType = GetMimeType(entry),
-                    CacheStatus = GetCacheStatus(entry),
+                    
+                    Request = new MlIngestRequest
+                    {
+                        Method = entry.Request.Method,
+                        Url = entry.Request.Url,
+                        QueryParams = ExtractQueryParams(entry),
+                        Headers = GetRequestHeaders(entry),
+                        Cookies = GetRequestCookies(entry),
+                        Body = GetRequestBody(entry),
+                        Size = CalculateRequestSize(entry),
+                        UserAgentCategory = CategorizeUserAgent(entry),
+                        HasAuth = HasAuthHeaders(entry)
+                    },
+                    
+                    Response = new MlIngestResponse
+                    {
+                        StatusCode = entry.Response.Status,
+                        Headers = GetResponseHeaders(entry),
+                        Cookies = GetResponseCookies(entry),
+                        Body = GetResponseBody(entry),
+                        Size = CalculateResponseSize(entry),
+                        ContentType = GetContentType(entry),
+                        MimeType = GetMimeType(entry),
+                        CacheStatus = GetCacheStatus(entry)
+                    },
+                    
+                    RequestType = DetermineRequestType(entry),
                     ResourceType = entry.ResourceType ?? string.Empty
                 };
 
                 // Extract domain and path
                 if (Uri.TryCreate(entry.Request.Url, UriKind.Absolute, out var uri))
                 {
-                    mlEntry.Domain = uri.Host;
-                    mlEntry.Path = uri.AbsolutePath;
+                    mlEntry.Request.Domain = uri.Host;
+                    mlEntry.Request.Path = uri.AbsolutePath;
                 }
-
-                // Set derived fields
-                mlEntry.RequestType = DetermineRequestType(entry);
-                mlEntry.HasAuth = HasAuthHeaders(entry);
-                mlEntry.UserAgentCategory = CategorizeUserAgent(entry);
 
                 mlEntries.Add(mlEntry);
             }
@@ -131,7 +140,7 @@ public class MlIngestExporter
         return entry.Response.Content?.MimeType ?? string.Empty;
     }
 
-    private string CombineCookies(HarEntry entry)
+    private string GetRequestCookies(HarEntry entry)
     {
         var cookies = new List<string>();
         
@@ -141,6 +150,13 @@ public class MlIngestExporter
             cookies.AddRange(entry.Request.Cookies.Select(c => $"{c.Name}={c.Value}"));
         }
 
+        return string.Join("; ", cookies);
+    }
+
+    private string GetResponseCookies(HarEntry entry)
+    {
+        var cookies = new List<string>();
+        
         // Response set-cookie headers
         var setCookieHeaders = entry.Response.Headers
             .Where(h => h.Name.Equals("set-cookie", StringComparison.OrdinalIgnoreCase))
@@ -151,7 +167,7 @@ public class MlIngestExporter
         return string.Join("; ", cookies);
     }
 
-    private string CombineHeaders(HarEntry entry)
+    private string GetRequestHeaders(HarEntry entry)
     {
         var headers = new List<string>();
         
@@ -162,6 +178,20 @@ public class MlIngestExporter
             .Select(h => $"{h.Name}={h.Value}");
         
         headers.AddRange(requestHeaders);
+
+        return string.Join("; ", headers);
+    }
+
+    private string GetResponseHeaders(HarEntry entry)
+    {
+        var headers = new List<string>();
+        
+        // Response headers
+        var responseHeaders = entry.Response.Headers
+            .Where(h => !h.Name.Equals("set-cookie", StringComparison.OrdinalIgnoreCase)) // Exclude set-cookie for brevity
+            .Select(h => $"{h.Name}={h.Value}");
+        
+        headers.AddRange(responseHeaders);
 
         return string.Join("; ", headers);
     }

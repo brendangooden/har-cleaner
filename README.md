@@ -13,6 +13,7 @@ A .NET CLI tool for cleaning and filtering HAR (HTTP Archive) files based on var
 - **Privacy & Security Cleaning**: Remove sensitive data like cookies, auth tokens, personal identifiers
 - **Content Filtering**: Remove or limit response/request content
 - **Chrome DevTools Data**: Remove browser-specific debugging fields
+- **ML-Ingest Export**: Export to structured JSON format optimized for machine learning analysis
 - **Verbose Output**: See detailed information about what was filtered
 - **Dry Run Mode**: Preview changes without saving
 
@@ -28,6 +29,9 @@ dotnet build
 ```bash
 # Clean a HAR file (copies all entries if no filters specified)
 HarCleaner -i input.har -o output.har
+
+# Export to ML-ingest format for machine learning analysis
+HarCleaner -i input.har -o output.json --output-type ml-ingest
 ```
 
 ### File Type Filtering
@@ -102,6 +106,25 @@ HarCleaner -i input.har -o headers-only.har --remove-response-content
 HarCleaner -i input.har -o standard.har --remove-chrome-data
 ```
 
+### ML-Ingest Export Format
+```bash
+# Export to structured JSON for machine learning analysis
+HarCleaner -i input.har -o ml-data.json --output-type ml-ingest
+
+# Combine with filtering for focused ML datasets
+HarCleaner -i input.har -o api-ml-data.json \
+  --output-type ml-ingest \
+  --xhr-only \
+  --include-url "api/"
+
+# Privacy-cleaned ML export
+HarCleaner -i input.har -o clean-ml-data.json \
+  --output-type ml-ingest \
+  --remove-cookies \
+  --remove-auth \
+  --remove-personal
+```
+
 ### Content Filtering
 ```bash
 # Remove large response content
@@ -147,7 +170,8 @@ HarCleaner -i input.har -o output.har --xhr-only --verbose
 | Option | Description |
 |--------|-------------|
 | `-i, --input` | Input HAR file path (required) |
-| `-o, --output` | Output HAR file path (required) |
+| `-o, --output` | Output file path (required) |
+| `--output-type` | Output format: 'har' (default) or 'ml-ingest' |
 | `--exclude-types` | Comma-separated list of file types to exclude |
 | `--include-types` | Comma-separated list of file types to include only |
 | `--xhr-only` | Include only XHR/AJAX requests |
@@ -171,6 +195,84 @@ HarCleaner -i input.har -o output.har --xhr-only --verbose
 | `--max-content-size` | Maximum content size in bytes (larger content will be removed) |
 | `--exclude-content-types` | Comma-separated list of content types to remove content from |
 | `--remove-chrome-data` | Remove Chrome DevTools specific fields |
+
+## ML-Ingest Output Format
+
+The ML-ingest export format produces structured JSON optimized for machine learning analysis. Each HTTP transaction is represented as a nested object with clearly separated request and response data.
+
+### Structure
+```json
+[
+  {
+    "timestamp": "2025-08-26T23:21:45.197Z",
+    "response_time_ms": 593.57,
+    "request": {
+      "method": "GET",
+      "url": "https://example.com/api/users",
+      "domain": "example.com",
+      "path": "/api/users",
+      "query_params": "page=1&limit=10",
+      "headers": "accept: application/json; user-agent: Chrome/139.0.0.0",
+      "cookies": "session_id=abc123; user_pref=dark_mode",
+      "body": null,
+      "size": 1024,
+      "user_agent_category": "chrome",
+      "has_auth": true
+    },
+    "response": {
+      "status_code": 200,
+      "headers": "content-type: application/json; cache-control: no-cache",
+      "cookies": "new_session=xyz789; expires=Wed, 03 Sep 2025 23:21:46 GMT",
+      "body": null,
+      "size": 2048,
+      "content_type": "application/json",
+      "mime_type": "application/json",
+      "cache_status": "no-cache"
+    },
+    "request_type": "xhr",
+    "resource_type": "xhr"
+  }
+]
+```
+
+### Request Object Fields
+- `method`: HTTP method (GET, POST, PUT, DELETE, etc.)
+- `url`: Complete request URL
+- `domain`: Extracted domain name
+- `path`: URL path component
+- `query_params`: Query string parameters
+- `headers`: Request headers (concatenated string)
+- `cookies`: Request cookies (concatenated string)
+- `body`: Request body content (null if none)
+- `size`: Request size in bytes
+- `user_agent_category`: Detected browser type (chrome, firefox, safari, etc.)
+- `has_auth`: Boolean indicating presence of authentication data
+
+### Response Object Fields
+- `status_code`: HTTP response status code
+- `headers`: Response headers (concatenated string)
+- `cookies`: Response Set-Cookie headers (concatenated string)
+- `body`: Response body content (null if removed/filtered)
+- `size`: Response size in bytes
+- `content_type`: Primary content type
+- `mime_type`: Full MIME type
+- `cache_status`: Cache control information
+
+### Top-Level Fields
+- `timestamp`: ISO 8601 timestamp of when request was made
+- `response_time_ms`: Time taken for response in milliseconds
+- `request`: Complete request object (see above)
+- `response`: Complete response object (see above)
+- `request_type`: Classified request type (document, xhr, etc.)
+- `resource_type`: Resource classification (document, script, image, etc.)
+
+### Use Cases for ML-Ingest Format
+- **Performance Analysis**: Analyze response times, sizes, and caching patterns
+- **Security Analysis**: Identify authentication patterns and security headers
+- **API Behavior**: Study request/response patterns for API endpoints
+- **User Journey Analysis**: Track user interactions through web applications
+- **Anomaly Detection**: Identify unusual request patterns or responses
+- **Traffic Classification**: Categorize different types of web traffic
 
 ## Examples
 
@@ -210,6 +312,23 @@ HarCleaner -i session.har -o large-responses.har \
   --verbose
 ```
 
+### Machine Learning Dataset Creation
+Export API calls to structured format for ML analysis:
+```bash
+# Export all API calls with authentication patterns
+HarCleaner -i production-traffic.har -o api-dataset.json \
+  --output-type ml-ingest \
+  --include-url "api/" \
+  --verbose
+
+# Create privacy-safe training dataset
+HarCleaner -i user-sessions.har -o training-data.json \
+  --output-type ml-ingest \
+  --remove-personal \
+  --remove-auth \
+  --max-content-size 1024
+```
+
 ## Build from Source
 
 ```bash
@@ -221,7 +340,7 @@ dotnet run --project src/HarCleaner -- --help
 
 ## Testing
 
-The project includes a comprehensive test suite with 56+ tests covering all components:
+The project includes a comprehensive test suite with 58+ tests covering all components:
 
 ### Running Tests
 ```bash
