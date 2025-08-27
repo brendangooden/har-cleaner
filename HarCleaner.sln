@@ -11,6 +11,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarCleaner.Tests", "src\Har
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarCleaner.UI", "src\HarCleaner.UI\HarCleaner.UI.csproj", "{239AD8FB-9ED2-4828-B077-F36DED55CA02}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,5 +72,8 @@ Global
 		{5A6D4974-C06D-40D5-A4B3-59144AA5B45F} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{50A8A7E6-39C6-4D43-8A75-65B209A03449} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{239AD8FB-9ED2-4828-B077-F36DED55CA02} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD7790B5-7C9D-4190-8050-89CD9D70A945}
 	EndGlobalSection
 EndGlobal
