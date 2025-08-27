@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarCleaner", "src\HarCleane
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarCleaner.Tests", "src\HarCleaner.Tests\HarCleaner.Tests.csproj", "{50A8A7E6-39C6-4D43-8A75-65B209A03449}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarCleaner.UI", "src\HarCleaner.UI\HarCleaner.UI.csproj", "{239AD8FB-9ED2-4828-B077-F36DED55CA02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,18 @@ Global
 		{50A8A7E6-39C6-4D43-8A75-65B209A03449}.Release|x64.Build.0 = Release|Any CPU
 		{50A8A7E6-39C6-4D43-8A75-65B209A03449}.Release|x86.ActiveCfg = Release|Any CPU
 		{50A8A7E6-39C6-4D43-8A75-65B209A03449}.Release|x86.Build.0 = Release|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Debug|x64.Build.0 = Debug|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Debug|x86.Build.0 = Debug|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Release|x64.ActiveCfg = Release|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Release|x64.Build.0 = Release|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Release|x86.ActiveCfg = Release|Any CPU
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,5 +64,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{5A6D4974-C06D-40D5-A4B3-59144AA5B45F} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{50A8A7E6-39C6-4D43-8A75-65B209A03449} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{239AD8FB-9ED2-4828-B077-F36DED55CA02} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal
