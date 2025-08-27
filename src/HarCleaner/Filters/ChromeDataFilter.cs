@@ -28,18 +28,95 @@ public class ChromeDataFilter : IFilter
 	public bool ShouldInclude(HarEntry entry)
 	{
 		// This filter cleans Chrome-specific data but doesn't exclude entries
-		// Note: This would require extending the HarEntry model to include Chrome-specific fields
-		// For now, this is a placeholder showing the concept
+		
+		if (_removeConnectionIds)
+		{
+			entry.ConnectionId = null;
+		}
 
-		// In a real implementation, you would clean fields like:
-		// - entry._connectionId
-		// - entry._initiator
-		// - entry._priority
-		// - entry._resourceType
-		// - entry.response._transferSize
-		// - entry.timings._blocked_queueing
-		// - entry.timings._workerStart, etc.
+		if (_removeInitiatorData)
+		{
+			entry.Initiator = null;
+		}
+
+		if (_removePriorityData)
+		{
+			entry.Priority = null;
+		}
+
+		if (_removeResourceTypeData)
+		{
+			entry.ResourceType = null;
+		}
+
+		if (_removeInternalTimings)
+		{
+			RemoveInternalTimings(entry);
+		}
+
+		if (_removeTransferSizes)
+		{
+			RemoveTransferSizes(entry);
+		}
 
 		return true;
+	}
+
+	private static void RemoveInternalTimings(HarEntry entry)
+	{
+		// Remove Chrome-specific timing fields by setting them to null
+		// These are fields that Chrome DevTools adds beyond the HAR spec
+		
+		// Remove comment field that might contain Chrome-specific timing data
+		if (!string.IsNullOrEmpty(entry.Timings.Comment) && 
+		    entry.Timings.Comment.Contains("queueing", StringComparison.OrdinalIgnoreCase))
+		{
+			entry.Timings.Comment = null;
+		}
+
+		// Remove entry-level comment that might contain Chrome-specific data
+		if (!string.IsNullOrEmpty(entry.Comment) &&
+		    (entry.Comment.Contains("devtools", StringComparison.OrdinalIgnoreCase) ||
+		     entry.Comment.Contains("chrome", StringComparison.OrdinalIgnoreCase)))
+		{
+			entry.Comment = null;
+		}
+	}
+
+	private static void RemoveTransferSizes(HarEntry entry)
+	{
+		// Remove Chrome-specific transfer size data
+		// Chrome DevTools sometimes adds transfer size information beyond standard HAR
+		
+		// Remove response headers that contain Chrome-specific transfer size info
+		var headersToRemove = new List<string>
+		{
+			"x-devtools-",
+			"x-chrome-",
+			"x-transfer-size"
+		};
+
+		for (int i = entry.Response.Headers.Count - 1; i >= 0; i--)
+		{
+			var header = entry.Response.Headers[i];
+			var headerName = header.Name.ToLowerInvariant();
+			
+			if (headersToRemove.Any(prefix => headerName.StartsWith(prefix, StringComparison.Ordinal)))
+			{
+				entry.Response.Headers.RemoveAt(i);
+			}
+		}
+
+		// Also check request headers for Chrome-specific transfer data
+		for (int i = entry.Request.Headers.Count - 1; i >= 0; i--)
+		{
+			var header = entry.Request.Headers[i];
+			var headerName = header.Name.ToLowerInvariant();
+			
+			if (headersToRemove.Any(prefix => headerName.StartsWith(prefix, StringComparison.Ordinal)))
+			{
+				entry.Request.Headers.RemoveAt(i);
+			}
+		}
 	}
 }
