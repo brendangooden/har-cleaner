@@ -17,6 +17,53 @@ A .NET CLI tool for cleaning and filtering HAR (HTTP Archive) files based on var
 - **Verbose Output**: See detailed information about what was filtered
 - **Dry Run Mode**: Preview changes without saving
 
+## Understanding Filter Types
+
+HAR Cleaner provides two distinct types of filtering that work differently:
+
+### Entry Filters (Remove Entire Requests)
+These filters **completely remove** HTTP requests/responses from the HAR file. When a request matches these criteria, the entire entry is deleted from the output.
+
+**Available Entry Filters:**
+- `--exclude-types` / `--include-types`: Remove requests based on file extensions or MIME types
+- `--include-url` / `--exclude-url`: Remove requests based on URL patterns  
+- `--include-methods` / `--exclude-methods`: Remove requests based on HTTP methods
+- `--include-status` / `--exclude-status`: Remove requests based on status codes
+- `--min-size` / `--max-size`: Remove requests based on response size
+- `--xhr-only`: Only keep XHR/AJAX requests, remove all others
+
+**Example**: `--exclude-types js,css,png` removes all JavaScript, CSS, and image requests entirely from the HAR file.
+
+### Content Filters (Keep Requests, Remove Content Body)
+These filters **keep the HTTP request/response entries** but remove or modify the actual content body. The request metadata (headers, timing, URLs, etc.) is preserved.
+
+**Available Content Filters:**
+- `--exclude-content-types`: Keep requests but remove content body for specified MIME types
+- `--max-content-size`: Keep requests but remove content body if larger than specified size
+- `--remove-response-content`: Remove all response content bodies
+- `--remove-request-content`: Remove all request content bodies (POST data)
+- `--remove-base64`: Remove base64 encoded content
+- Privacy options (`--remove-cookies`, `--remove-auth`, etc.): Remove sensitive data while keeping requests
+
+**Example**: `--exclude-content-types image,video` keeps image/video requests in the HAR file with all their metadata (headers, timing, size), but replaces the actual content with `[CONTENT REMOVED - Type: image/png]`.
+
+### When to Use Which Filter Type
+
+**Use Entry Filters When:**
+- You want to reduce HAR file size by removing unnecessary requests
+- You want to focus analysis on specific types of requests  
+- You don't need the metadata for filtered requests
+- Examples: Remove all static assets to focus on API calls, only include POST requests for security analysis
+
+**Use Content Filters When:**
+- You want to preserve request metadata but remove sensitive/large content
+- You need timing and header information but not the actual content
+- You want to sanitize data while keeping the request structure
+- Examples: Remove image content but keep timing data for performance analysis, sanitize responses while preserving request patterns
+
+**Combining Both Types:**
+Entry filters are applied first (removing entire requests), then content filters are applied to the remaining requests (modifying content). This allows powerful combinations like keeping only API requests AND removing large response bodies.
+
 ## Installation
 
 ```bash
@@ -137,6 +184,15 @@ HarCleaner -i input.har -o no-media.har --exclude-content-types "image,video,aud
 HarCleaner -i input.har -o no-base64.har --remove-base64
 ```
 
+### Header Filtering
+```bash
+# Exclude specific headers from requests and responses
+HarCleaner -i input.har -o output.har --exclude-headers "user-agent,accept-language"
+
+# Only include certain headers (remove all others)
+HarCleaner -i input.har -o output.har --include-headers "authorization,content-type"
+```
+
 ### Combined Filtering
 ```bash
 # Complex filtering: XHR only, API calls, exclude tracking, successful responses only
@@ -194,6 +250,8 @@ HarCleaner -i input.har -o output.har --xhr-only --verbose
 | `--remove-base64` | Remove base64 encoded content |
 | `--max-content-size` | Maximum content size in bytes (larger content will be removed) |
 | `--exclude-content-types` | Comma-separated list of content types to remove content from |
+| `--include-headers` | Comma-separated list of header names or patterns to include in requests and responses (others will be removed) |
+| `--exclude-headers` | Comma-separated list of header names or patterns to exclude from requests and responses |
 | `--remove-chrome-data` | Remove Chrome DevTools specific fields |
 
 ## ML-Ingest Output Format

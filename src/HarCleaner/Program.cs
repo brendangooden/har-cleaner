@@ -102,6 +102,20 @@ public static class Program
 				}
 			}
 
+			// Add header filter
+			if (options.IncludeHeadersList.Length > 0 || options.ExcludeHeadersList.Length > 0)
+			{
+				cleaner.AddFilter(new HeaderFilter(options.IncludeHeadersList, options.ExcludeHeadersList));
+				if (options.IncludeHeadersList.Length > 0)
+				{
+					filtersApplied.Add($"Include headers: {string.Join(", ", options.IncludeHeadersList)}");
+				}
+				if (options.ExcludeHeadersList.Length > 0)
+				{
+					filtersApplied.Add($"Exclude headers: {string.Join(", ", options.ExcludeHeadersList)}");
+				}
+			}
+
 			// Add status code filter
 			if (options.IncludeStatusCodesList.Length > 0 || options.ExcludeStatusCodesList.Length > 0)
 			{

@@ -49,6 +49,65 @@ public class HarCleanerServiceTests
 	}
 
 	[Fact]
+	public void Clean_WithHeaderFilter_ModifiesHeadersCorrectly()
+	{
+		// Arrange
+		var service = new HarCleanerService();
+		service.AddFilter(new HeaderFilter(Array.Empty<string>(), new[] { "user-agent" }));
+
+		var harFile = TestDataHelper.CreateTestHarFile();
+		var entry = TestDataHelper.CreateTestEntry("https://example.com/api");
+		entry.Request.Headers.Add(new Models.HarNameValuePair { Name = "User-Agent", Value = "Chrome/91.0" });
+		entry.Request.Headers.Add(new Models.HarNameValuePair { Name = "Authorization", Value = "Bearer token" });
+		harFile.Log.Entries.Add(entry);
+
+		// Act
+		var result = service.Clean(harFile);
+
+		// Assert
+		Assert.Equal(1, result.OriginalCount);
+		Assert.Equal(1, result.FilteredCount); // Entry should remain
+		Assert.Equal(0, result.RemovedCount);
+
+		// Verify headers were filtered
+		var cleanedEntry = result.CleanedHarFile.Log.Entries[0];
+		Assert.Single(cleanedEntry.Request.Headers);
+		Assert.Equal("Authorization", cleanedEntry.Request.Headers[0].Name);
+	}
+
+	[Fact]
+	public void Clean_WithHeaderAndUrlFilters_AppliesAllFilters()
+	{
+		// Arrange
+		var service = new HarCleanerService();
+		service.AddFilter(new UrlFilter(new[] { "api" }, Array.Empty<string>()));
+		service.AddFilter(new HeaderFilter(new[] { "authorization" }, Array.Empty<string>()));
+
+		var harFile = TestDataHelper.CreateTestHarFile();
+
+		var apiEntry = TestDataHelper.CreateTestEntry("https://example.com/api/users");
+		apiEntry.Request.Headers.Add(new Models.HarNameValuePair { Name = "User-Agent", Value = "Chrome/91.0" });
+		apiEntry.Request.Headers.Add(new Models.HarNameValuePair { Name = "Authorization", Value = "Bearer token" });
+		harFile.Log.Entries.Add(apiEntry);
+
+		var pageEntry = TestDataHelper.CreateTestEntry("https://example.com/page");
+		harFile.Log.Entries.Add(pageEntry);
+
+		// Act
+		var result = service.Clean(harFile);
+
+		// Assert
+		Assert.Equal(2, result.OriginalCount);
+		Assert.Equal(1, result.FilteredCount); // Only API entry should remain
+		Assert.Equal(1, result.RemovedCount);
+
+		// Verify headers were filtered on remaining entry
+		var cleanedEntry = result.CleanedHarFile.Log.Entries[0];
+		Assert.Single(cleanedEntry.Request.Headers);
+		Assert.Equal("Authorization", cleanedEntry.Request.Headers[0].Name);
+	}
+
+	[Fact]
 	public void Clean_WithMultipleFilters_AppliesAllFilters()
 	{
 		// Arrange

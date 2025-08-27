@@ -165,6 +165,10 @@ public partial class MainForm : Form
 			IncludeUrlPatterns = string.IsNullOrWhiteSpace(txtIncludeUrl.Text) ? null : txtIncludeUrl.Text,
 			ExcludeUrlPatterns = string.IsNullOrWhiteSpace(txtExcludeUrl.Text) ? null : txtExcludeUrl.Text,
 
+			// Header filters
+			IncludeHeaders = string.IsNullOrWhiteSpace(txtIncludeHeaders.Text) ? null : txtIncludeHeaders.Text,
+			ExcludeHeaders = string.IsNullOrWhiteSpace(txtExcludeHeaders.Text) ? null : txtExcludeHeaders.Text,
+
 			// Method filters
 			IncludeMethods = string.IsNullOrWhiteSpace(txtIncludeMethods.Text) ? null : txtIncludeMethods.Text,
 			ExcludeMethods = string.IsNullOrWhiteSpace(txtExcludeMethods.Text) ? null : txtExcludeMethods.Text,
@@ -221,6 +225,12 @@ public partial class MainForm : Form
 			if (_filterOptions.IncludeUrlPatternsList.Length > 0 || _filterOptions.ExcludeUrlPatternsList.Length > 0)
 			{
 				harCleaner.AddFilter(new UrlFilter(_filterOptions.IncludeUrlPatternsList, _filterOptions.ExcludeUrlPatternsList));
+			}
+
+			// Add header filter
+			if (_filterOptions.IncludeHeadersList.Length > 0 || _filterOptions.ExcludeHeadersList.Length > 0)
+			{
+				harCleaner.AddFilter(new HeaderFilter(_filterOptions.IncludeHeadersList, _filterOptions.ExcludeHeadersList));
 			}
 
 			// Add status code filter

@@ -32,7 +32,7 @@ namespace HarCleaner.UI
             var mainTable = new TableLayoutPanel();
             var leftPanel = new Panel();
             var rightPanel = new Panel();
-            
+
             // File selection
             var grpFiles = new GroupBox();
             var lblInputFile = new Label();
@@ -43,42 +43,48 @@ namespace HarCleaner.UI
             btnBrowseOutput = new Button();
             var lblOutputType = new Label();
             cmbOutputType = new ComboBox();
-            
+
             // Filter options
             var grpFilters = new GroupBox();
             var filterTable = new TableLayoutPanel();
-            
+
             // Type filters
             var lblExcludeTypes = new Label();
             txtExcludeTypes = new TextBox();
             var lblIncludeTypes = new Label();
             txtIncludeTypes = new TextBox();
             chkXhrOnly = new CheckBox();
-            
+
             // URL filters
             var lblIncludeUrl = new Label();
             txtIncludeUrl = new TextBox();
             var lblExcludeUrl = new Label();
             txtExcludeUrl = new TextBox();
-            
+
+            // Header filters
+            var lblIncludeHeaders = new Label();
+            txtIncludeHeaders = new TextBox();
+            var lblExcludeHeaders = new Label();
+            txtExcludeHeaders = new TextBox();
+
             // Method filters
             var lblIncludeMethods = new Label();
             txtIncludeMethods = new TextBox();
             var lblExcludeMethods = new Label();
             txtExcludeMethods = new TextBox();
-            
+
             // Size filters
             var lblMinSize = new Label();
             txtMinSize = new TextBox();
             var lblMaxSize = new Label();
             txtMaxSize = new TextBox();
-            
+
             // Status filters
             var lblIncludeStatus = new Label();
             txtIncludeStatus = new TextBox();
             var lblExcludeStatus = new Label();
             txtExcludeStatus = new TextBox();
-            
+
             // Privacy options
             var grpPrivacy = new GroupBox();
             chkRemoveCookies = new CheckBox();
@@ -89,25 +95,25 @@ namespace HarCleaner.UI
             chkRemoveRequestContent = new CheckBox();
             chkRemoveBase64 = new CheckBox();
             chkRemoveChromeData = new CheckBox();
-            
+
             // Content options
             var grpContent = new GroupBox();
             var lblMaxContentSize = new Label();
             txtMaxContentSize = new TextBox();
             var lblExcludeContentTypes = new Label();
             txtExcludeContentTypes = new TextBox();
-            
+
             // Processing options
             var grpProcessing = new GroupBox();
             chkVerbose = new CheckBox();
             chkDryRun = new CheckBox();
             btnProcess = new Button();
-            
+
             // Output display
             var grpOutput = new GroupBox();
             txtOutput = new TextBox();
             btnSaveOutput = new Button();
-            
+
             // Status bar
             var statusPanel = new Panel();
             lblStatus = new Label();
@@ -128,9 +134,9 @@ namespace HarCleaner.UI
             grpOutput.SuspendLayout();
             statusPanel.SuspendLayout();
 
-            // 
+            //
             // mainTable
-            // 
+            //
             mainTable.ColumnCount = 2;
             mainTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
             mainTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
@@ -144,9 +150,9 @@ namespace HarCleaner.UI
             mainTable.Size = new Size(1000, 640);
             mainTable.TabIndex = 0;
 
-            // 
+            //
             // leftPanel
-            // 
+            //
             leftPanel.AutoScroll = true;
             leftPanel.Controls.Add(grpFiles);
             leftPanel.Controls.Add(grpFilters);
@@ -160,9 +166,9 @@ namespace HarCleaner.UI
             leftPanel.Size = new Size(394, 634);
             leftPanel.TabIndex = 0;
 
-            // 
+            //
             // rightPanel
-            // 
+            //
             rightPanel.Controls.Add(grpOutput);
             rightPanel.Dock = DockStyle.Fill;
             rightPanel.Location = new Point(403, 3);
@@ -171,9 +177,9 @@ namespace HarCleaner.UI
             rightPanel.Size = new Size(594, 634);
             rightPanel.TabIndex = 1;
 
-            // 
+            //
             // grpFiles
-            // 
+            //
             grpFiles.Controls.Add(lblInputFile);
             grpFiles.Controls.Add(txtInputFile);
             grpFiles.Controls.Add(btnBrowseInput);
@@ -191,9 +197,9 @@ namespace HarCleaner.UI
             grpFiles.TabStop = false;
             grpFiles.Text = "Files (Drag & Drop HAR files here)";
 
-            // 
+            //
             // lblInputFile
-            // 
+            //
             lblInputFile.AutoSize = true;
             lblInputFile.Location = new Point(8, 20);
             lblInputFile.Name = "lblInputFile";
@@ -201,9 +207,9 @@ namespace HarCleaner.UI
             lblInputFile.TabIndex = 0;
             lblInputFile.Text = "Input File:";
 
-            // 
+            //
             // txtInputFile
-            // 
+            //
             txtInputFile.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtInputFile.Location = new Point(8, 38);
             txtInputFile.Name = "txtInputFile";
@@ -211,9 +217,9 @@ namespace HarCleaner.UI
             txtInputFile.Size = new Size(290, 23);
             txtInputFile.TabIndex = 1;
 
-            // 
+            //
             // btnBrowseInput
-            // 
+            //
             btnBrowseInput.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnBrowseInput.Location = new Point(305, 37);
             btnBrowseInput.Name = "btnBrowseInput";
@@ -223,9 +229,9 @@ namespace HarCleaner.UI
             btnBrowseInput.UseVisualStyleBackColor = true;
             btnBrowseInput.Click += btnBrowseInput_Click;
 
-            // 
+            //
             // lblOutputFile
-            // 
+            //
             lblOutputFile.AutoSize = true;
             lblOutputFile.Location = new Point(8, 70);
             lblOutputFile.Name = "lblOutputFile";
@@ -233,18 +239,18 @@ namespace HarCleaner.UI
             lblOutputFile.TabIndex = 3;
             lblOutputFile.Text = "Output File:";
 
-            // 
+            //
             // txtOutputFile
-            // 
+            //
             txtOutputFile.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtOutputFile.Location = new Point(8, 88);
             txtOutputFile.Name = "txtOutputFile";
             txtOutputFile.Size = new Size(290, 23);
             txtOutputFile.TabIndex = 4;
 
-            // 
+            //
             // btnBrowseOutput
-            // 
+            //
             btnBrowseOutput.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnBrowseOutput.Location = new Point(305, 87);
             btnBrowseOutput.Name = "btnBrowseOutput";
@@ -254,9 +260,9 @@ namespace HarCleaner.UI
             btnBrowseOutput.UseVisualStyleBackColor = true;
             btnBrowseOutput.Click += btnBrowseOutput_Click;
 
-            // 
+            //
             // lblOutputType
-            // 
+            //
             lblOutputType.AutoSize = true;
             lblOutputType.Location = new Point(200, 20);
             lblOutputType.Name = "lblOutputType";
@@ -264,9 +270,9 @@ namespace HarCleaner.UI
             lblOutputType.TabIndex = 6;
             lblOutputType.Text = "Output Type:";
 
-            // 
+            //
             // cmbOutputType
-            // 
+            //
             cmbOutputType.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmbOutputType.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbOutputType.FormattingEnabled = true;
@@ -280,7 +286,8 @@ namespace HarCleaner.UI
 
             // Configure remaining controls...
             SetupFilterControls(grpFilters, filterTable, lblExcludeTypes, txtExcludeTypes, lblIncludeTypes, txtIncludeTypes, chkXhrOnly,
-                              lblIncludeUrl, txtIncludeUrl, lblExcludeUrl, txtExcludeUrl, lblIncludeMethods, txtIncludeMethods,
+                              lblIncludeUrl, txtIncludeUrl, lblExcludeUrl, txtExcludeUrl, lblIncludeHeaders, txtIncludeHeaders,
+                              lblExcludeHeaders, txtExcludeHeaders, lblIncludeMethods, txtIncludeMethods,
                               lblExcludeMethods, txtExcludeMethods, lblMinSize, txtMinSize, lblMaxSize, txtMaxSize,
                               lblIncludeStatus, txtIncludeStatus, lblExcludeStatus, txtExcludeStatus);
 
@@ -293,9 +300,9 @@ namespace HarCleaner.UI
 
             SetupOutputControls(grpOutput, txtOutput, btnSaveOutput);
 
-            // 
+            //
             // statusPanel
-            // 
+            //
             statusPanel.Controls.Add(lblStatus);
             statusPanel.Controls.Add(lblStats);
             statusPanel.Controls.Add(progressBar);
@@ -305,9 +312,9 @@ namespace HarCleaner.UI
             statusPanel.Size = new Size(1000, 30);
             statusPanel.TabIndex = 1;
 
-            // 
+            //
             // lblStatus
-            // 
+            //
             lblStatus.AutoSize = true;
             lblStatus.Location = new Point(8, 8);
             lblStatus.Name = "lblStatus";
@@ -315,9 +322,9 @@ namespace HarCleaner.UI
             lblStatus.TabIndex = 0;
             lblStatus.Text = "Ready to process";
 
-            // 
+            //
             // lblStats
-            // 
+            //
             lblStats.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblStats.AutoSize = true;
             lblStats.Location = new Point(250, 8);
@@ -325,18 +332,18 @@ namespace HarCleaner.UI
             lblStats.Size = new Size(0, 15);
             lblStats.TabIndex = 1;
 
-            // 
+            //
             // progressBar
-            // 
+            //
             progressBar.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             progressBar.Location = new Point(800, 5);
             progressBar.Name = "progressBar";
             progressBar.Size = new Size(190, 20);
             progressBar.TabIndex = 2;
 
-            // 
+            //
             // MainForm
-            // 
+            //
             this.AutoScaleDimensions = new SizeF(7F, 15F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(1000, 670);
@@ -369,7 +376,8 @@ namespace HarCleaner.UI
 
         private void SetupFilterControls(GroupBox grpFilters, TableLayoutPanel filterTable, Label lblExcludeTypes, TextBox txtExcludeTypes,
             Label lblIncludeTypes, TextBox txtIncludeTypes, CheckBox chkXhrOnly, Label lblIncludeUrl, TextBox txtIncludeUrl,
-            Label lblExcludeUrl, TextBox txtExcludeUrl, Label lblIncludeMethods, TextBox txtIncludeMethods,
+            Label lblExcludeUrl, TextBox txtExcludeUrl, Label lblIncludeHeaders, TextBox txtIncludeHeaders,
+            Label lblExcludeHeaders, TextBox txtExcludeHeaders, Label lblIncludeMethods, TextBox txtIncludeMethods,
             Label lblExcludeMethods, TextBox txtExcludeMethods, Label lblMinSize, TextBox txtMinSize, Label lblMaxSize,
             TextBox txtMaxSize, Label lblIncludeStatus, TextBox txtIncludeStatus, Label lblExcludeStatus, TextBox txtExcludeStatus)
         {
@@ -378,26 +386,39 @@ namespace HarCleaner.UI
             grpFilters.Location = new Point(5, 140);
             grpFilters.Name = "grpFilters";
             grpFilters.Padding = new Padding(8);
-            grpFilters.Size = new Size(384, 280);
+            grpFilters.Size = new Size(384, 340); // Increased height for new header filters
             grpFilters.TabIndex = 1;
             grpFilters.TabStop = false;
-            grpFilters.Text = "Filters";
+            grpFilters.Text = "Entry Filters (Remove Entire Requests)";
+
+            // Add help text
+            var helpLabel = new Label
+            {
+                Text = "These filters completely remove HTTP requests from the HAR file.",
+                ForeColor = Color.DarkGray,
+                Font = new Font("Segoe UI", 8.25F, FontStyle.Italic),
+                AutoSize = false,
+                Size = new Size(360, 20),
+                Location = new Point(8, 16),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            grpFilters.Controls.Add(helpLabel);
 
             filterTable.ColumnCount = 2;
             filterTable.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
             filterTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             filterTable.Dock = DockStyle.Fill;
-            filterTable.Location = new Point(8, 24);
+            filterTable.Location = new Point(8, 40); // Moved down for help text
             filterTable.Name = "filterTable";
-            filterTable.RowCount = 12;
-            for (int i = 0; i < 12; i++)
+            filterTable.RowCount = 14;
+            for (int i = 0; i < 14; i++)
                 filterTable.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            filterTable.Size = new Size(368, 248);
+            filterTable.Size = new Size(368, 292); // Adjusted for help text and new rows
             filterTable.TabIndex = 0;
 
             int row = 0;
-            
-            // Type filters
+
+            // Type filters - Remove entire entries
             lblExcludeTypes.Text = "Exclude Types:";
             lblExcludeTypes.Anchor = AnchorStyles.Left;
             txtExcludeTypes.Anchor = AnchorStyles.Left | AnchorStyles.Right;
@@ -431,6 +452,21 @@ namespace HarCleaner.UI
             txtExcludeUrl.PlaceholderText = "static,cdn";
             filterTable.Controls.Add(lblExcludeUrl, 0, row);
             filterTable.Controls.Add(txtExcludeUrl, 1, row++);
+
+            // Header filters
+            lblIncludeHeaders.Text = "Include Headers:";
+            lblIncludeHeaders.Anchor = AnchorStyles.Left;
+            txtIncludeHeaders.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            txtIncludeHeaders.PlaceholderText = "authorization,content-type";
+            filterTable.Controls.Add(lblIncludeHeaders, 0, row);
+            filterTable.Controls.Add(txtIncludeHeaders, 1, row++);
+
+            lblExcludeHeaders.Text = "Exclude Headers:";
+            lblExcludeHeaders.Anchor = AnchorStyles.Left;
+            txtExcludeHeaders.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            txtExcludeHeaders.PlaceholderText = "user-agent,accept-language";
+            filterTable.Controls.Add(lblExcludeHeaders, 0, row);
+            filterTable.Controls.Add(txtExcludeHeaders, 1, row++);
 
             // Method filters
             lblIncludeMethods.Text = "Include Methods:";
@@ -483,7 +519,7 @@ namespace HarCleaner.UI
             CheckBox chkRemoveRequestContent, CheckBox chkRemoveBase64, CheckBox chkRemoveChromeData)
         {
             grpPrivacy.Dock = DockStyle.Top;
-            grpPrivacy.Location = new Point(5, 425);
+            grpPrivacy.Location = new Point(5, 485); // Adjusted for increased filter group height with header filters
             grpPrivacy.Name = "grpPrivacy";
             grpPrivacy.Padding = new Padding(8);
             grpPrivacy.Size = new Size(384, 120);
@@ -522,34 +558,47 @@ namespace HarCleaner.UI
             Label lblExcludeContentTypes, TextBox txtExcludeContentTypes)
         {
             grpContent.Dock = DockStyle.Top;
-            grpContent.Location = new Point(5, 550);
+            grpContent.Location = new Point(5, 610); // Adjusted for increased filter group height with header filters
             grpContent.Name = "grpContent";
             grpContent.Padding = new Padding(8);
-            grpContent.Size = new Size(384, 80);
+            grpContent.Size = new Size(384, 100); // Increased height for help text
             grpContent.TabIndex = 3;
             grpContent.TabStop = false;
-            grpContent.Text = "Content Options";
+            grpContent.Text = "Content Filters (Keep Requests, Remove Content Body)";
+
+            // Add help text
+            var helpLabel = new Label
+            {
+                Text = "These options keep HTTP requests but remove or modify the content body.",
+                ForeColor = Color.DarkGray,
+                Font = new Font("Segoe UI", 8.25F, FontStyle.Italic),
+                AutoSize = false,
+                Size = new Size(360, 20),
+                Location = new Point(8, 16),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            grpContent.Controls.Add(helpLabel);
 
             lblMaxContentSize.AutoSize = true;
-            lblMaxContentSize.Location = new Point(8, 25);
+            lblMaxContentSize.Location = new Point(8, 40); // Moved down for help text
             lblMaxContentSize.Name = "lblMaxContentSize";
             lblMaxContentSize.Size = new Size(120, 15);
             lblMaxContentSize.Text = "Max Content Size:";
 
             txtMaxContentSize.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtMaxContentSize.Location = new Point(135, 22);
+            txtMaxContentSize.Location = new Point(135, 37); // Moved down for help text
             txtMaxContentSize.Name = "txtMaxContentSize";
             txtMaxContentSize.PlaceholderText = "10000";
             txtMaxContentSize.Size = new Size(240, 23);
 
             lblExcludeContentTypes.AutoSize = true;
-            lblExcludeContentTypes.Location = new Point(8, 55);
+            lblExcludeContentTypes.Location = new Point(8, 70); // Moved down for help text
             lblExcludeContentTypes.Name = "lblExcludeContentTypes";
             lblExcludeContentTypes.Size = new Size(120, 15);
             lblExcludeContentTypes.Text = "Exclude Content Types:";
 
             txtExcludeContentTypes.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtExcludeContentTypes.Location = new Point(135, 52);
+            txtExcludeContentTypes.Location = new Point(135, 67); // Moved down for help text
             txtExcludeContentTypes.Name = "txtExcludeContentTypes";
             txtExcludeContentTypes.PlaceholderText = "image,video";
             txtExcludeContentTypes.Size = new Size(240, 23);
@@ -562,7 +611,7 @@ namespace HarCleaner.UI
         private void SetupProcessingControls(GroupBox grpProcessing, CheckBox chkVerbose, CheckBox chkDryRun, Button btnProcess)
         {
             grpProcessing.Dock = DockStyle.Top;
-            grpProcessing.Location = new Point(5, 635);
+            grpProcessing.Location = new Point(5, 715); // Adjusted for increased content group height with header filters
             grpProcessing.Name = "grpProcessing";
             grpProcessing.Padding = new Padding(8);
             grpProcessing.Size = new Size(384, 80);
@@ -636,19 +685,21 @@ namespace HarCleaner.UI
         private TextBox txtOutputFile = null!;
         private Button btnBrowseOutput = null!;
         private ComboBox cmbOutputType = null!;
-        
+
         private TextBox txtExcludeTypes = null!;
         private TextBox txtIncludeTypes = null!;
         private CheckBox chkXhrOnly = null!;
         private TextBox txtIncludeUrl = null!;
         private TextBox txtExcludeUrl = null!;
+        private TextBox txtIncludeHeaders = null!;
+        private TextBox txtExcludeHeaders = null!;
         private TextBox txtIncludeMethods = null!;
         private TextBox txtExcludeMethods = null!;
         private TextBox txtMinSize = null!;
         private TextBox txtMaxSize = null!;
         private TextBox txtIncludeStatus = null!;
         private TextBox txtExcludeStatus = null!;
-        
+
         private CheckBox chkRemoveCookies = null!;
         private CheckBox chkRemoveAuth = null!;
         private CheckBox chkRemovePersonal = null!;
@@ -657,17 +708,17 @@ namespace HarCleaner.UI
         private CheckBox chkRemoveRequestContent = null!;
         private CheckBox chkRemoveBase64 = null!;
         private CheckBox chkRemoveChromeData = null!;
-        
+
         private TextBox txtMaxContentSize = null!;
         private TextBox txtExcludeContentTypes = null!;
-        
+
         private CheckBox chkVerbose = null!;
         private CheckBox chkDryRun = null!;
         private Button btnProcess = null!;
-        
+
         private TextBox txtOutput = null!;
         private Button btnSaveOutput = null!;
-        
+
         private Label lblStatus = null!;
         private Label lblStats = null!;
         private ProgressBar progressBar = null!;
