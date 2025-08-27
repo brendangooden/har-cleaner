@@ -75,7 +75,7 @@ public class RequestTypeFilter : IFilter
                 // Handle common mappings
                 var isMatch = type switch
                 {
-                    "js" => mimeType.Contains("javascript") || mimeType.Contains("js"),
+                    "js" => mimeType.Contains("javascript") || mimeType.Equals("application/javascript", StringComparison.OrdinalIgnoreCase) || mimeType.Equals("text/javascript", StringComparison.OrdinalIgnoreCase),
                     "css" => mimeType.Contains("css"),
                     "html" => mimeType.Contains("html"),
                     "json" => mimeType.Contains("json"),
