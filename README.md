@@ -58,10 +58,14 @@ These filters **keep the HTTP request/response entries** but selectively include
 - `--include-cookies`: Only keep cookies matching the specified patterns (others are removed)
 - `--exclude-cookies`: Remove cookies matching the specified patterns (others are kept)
 
+**Filter Combination Behavior:**
+When both include and exclude patterns are specified, include patterns are applied first (filtering to only matching items), then exclude patterns are applied to remove items from the included set.
+
 **Examples**: 
 - `--exclude-headers "user-agent,accept-language"` removes browser identification headers while keeping all other headers
 - `--include-cookies "session,auth"` only keeps authentication-related cookies, removing tracking and analytics cookies
-- `--exclude-cookies "tracking,analytics"` removes privacy-invasive cookies while preserving functional cookies
+- `--include-headers "content,auth" --exclude-headers "length"` keeps content and auth headers, but excludes content-length specifically
+- `--include-cookies "session" --exclude-cookies "tracking"` keeps session cookies but excludes any that contain "tracking"
 
 ### When to Use Which Filter Type
 

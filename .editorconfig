@@ -229,3 +229,4 @@ dotnet_diagnostic.CA1054.severity = none  # Uri parameters should not be strings
 dotnet_diagnostic.CA1305.severity = none  # Unused parameter (can be ignored in some cases)
 dotnet_diagnostic.S4487.severity = none  # Unused parameter (can be ignored in some cases)
 dotnet_diagnostic.IDE1006.severity = none  # Unused parameter (can be ignored in some cases)
+dotnet_diagnostic.S125.severity = suggestion # Remove commented code
